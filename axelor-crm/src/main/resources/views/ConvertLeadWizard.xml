@@ -248,14 +248,13 @@
 	</action-record>
 	
 	<action-record name="action-convert-lead-wizard-default" model="com.axelor.apps.base.db.Wizard">
+    	<field name="_lead" expr="eval: _lead = __repo__.of(Lead).find(_lead.id)"/>
     	<field name="partner" expr="action: action-convert-lead-wizard-record-default-partner"/>
     	<field name="contactPartner" expr="action: action-convert-lead-wizard-record-default-contact"/>
     	<field name="opportunity" expr="action: action-opportunity-record-from-lead"/>
     	<field name="callEvent" expr="action: action-convert-lead-wizard-default-call-event"/>
     	<field name="meetingEvent" expr="action: action-convert-lead-wizard-default-meeting-event"/>
     	<field name="taskEvent" expr="action: action-convert-lead-wizard-default-task-event"/>
-    	<field name="_lead" expr="eval: _lead"/>
-    	
     </action-record>
     
 <!-- 	<action-record name="action-convert-lead-wizard-address" model="com.axelor.apps.base.db.Wizard"> -->
@@ -400,7 +399,7 @@
     	<field name="fax" expr="eval: _lead.fax"/>
     	<field name="mobilePhone" expr="eval: _lead.mobilePhone"/>
     	<field name="fixedPhone" expr="eval: _lead.fixedPhone"/>
-    	<field name="webSite" expr="eval: _lead.website"/>
+    	<field name="webSite" expr="eval: _lead.webSite"/>
     	<field name="source" expr="eval: _lead.source"/>
     	<field name="department" expr="eval: _lead.department"/>
 <!--     	<field name="userInfo" expr="eval: com.axelor.apps.base.db.UserInfoi_lead.userInfo"/> //TODO -->
@@ -447,7 +446,7 @@
     	<field name="fax" expr="eval: _lead.fax"/>
     	<field name="mobilePhone" expr="eval: _lead.mobilePhone"/>
     	<field name="fixedPhone" expr="eval: _lead.fixedPhone"/>
-    	<field name="webSite" expr="eval: _lead.website"/>
+    	<field name="webSite" expr="eval: _lead.webSite"/>
     	<field name="source" expr="eval: _lead.source"/>
     	<field name="department" expr="eval: _lead.department"/>
     	<field name="user" expr="eval: _lead.user"/>
@@ -545,7 +544,7 @@
     	<field name="typeSelect" expr="eval: 1"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="user" expr="eval: __repo__.of(User).find(_lead.user?.id)"/>
+    	<field name="user" expr="eval: _lead.user"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>
@@ -579,7 +578,7 @@
     	<field name="typeSelect" expr="eval: 2"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="user" expr="eval: __repo__.of(User).find(_lead.user?.id)"/>
+    	<field name="user" expr="eval: _lead.user"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>
@@ -611,7 +610,7 @@
     	<field name="typeSelect" expr="eval: 3"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="user" expr="eval: __repo__.of(User).find(_lead.user?.id)"/>
+    	<field name="user" expr="eval: _lead.user"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="11"/>
     	<field name="startDateTime" expr="eval: __time__"/>
