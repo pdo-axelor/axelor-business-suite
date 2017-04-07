@@ -55,7 +55,7 @@ public class ConvertLeadWizardController {
 
 		Context context = request.getContext();
 
-		Map<String, Object> leadContext = (Map<String, Object>) context.get("_lead");
+		Map<String, Object> leadContext = (Map<String, Object>) context.get("$_lead");
 
 		Lead lead = leadRepo.find(((Integer)leadContext.get("id")).longValue());
 
@@ -66,44 +66,44 @@ public class ConvertLeadWizardController {
 		Event meetingEvent = null;
 		Event taskEvent = null;
 
-		if(context.get("hasConvertIntoContact") != null && (Boolean) context.get("hasConvertIntoContact")) {
+		if(context.get("$hasConvertIntoContact") != null && (Boolean) context.get("$hasConvertIntoContact")) {
 
-			contactPartner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("contactPartner"),
+			contactPartner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("$contactPartner"),
 																	convertLeadWizardService.createPrimaryAddress(context),
 																	convertLeadWizardService.createOtherAddress(context));
 			//TODO check all required fields...
 		}
-		else  if(context.get("selectContact") != null) {
-			Map<String, Object> selectContactContext = (Map<String, Object>) context.get("selectContact");
+		else  if(context.get("$selectContactPartner") != null) {
+			Map<String, Object> selectContactContext = (Map<String, Object>) context.get("$selectContactPartner");
 			contactPartner = partnerRepo.find(((Integer) selectContactContext.get("id")).longValue());
 		}
 
-		if(context.get("hasConvertIntoPartner") != null && (Boolean) context.get("hasConvertIntoPartner")) {
+		if(context.get("$hasConvertIntoPartner") != null && (Boolean) context.get("$hasConvertIntoPartner")) {
 			
-			partner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("partner"),
+			partner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("$partner"),
 															convertLeadWizardService.createPrimaryAddress(context),
 															convertLeadWizardService.createOtherAddress(context));
 			//TODO check all required fields...
 		}
-		else  if(context.get("selectPartner") != null) {
-			Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("selectPartner");
+		else  if(context.get("$selectPartner") != null) {
+			Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("$selectPartner");
 			partner = partnerRepo.find(((Integer) selectPartnerContext.get("id")).longValue());
 		}
 
-		if(context.get("hasConvertIntoOpportunity") != null && (Boolean) context.get("hasConvertIntoOpportunity")) {
-			opportunity = convertLeadWizardService.createOpportunity((Map<String, Object>) context.get("opportunity"));
+		if(context.get("$hasConvertIntoOpportunity") != null && (Boolean) context.get("$hasConvertIntoOpportunity")) {
+			opportunity = convertLeadWizardService.createOpportunity((Map<String, Object>) context.get("$opportunity"));
 			//TODO check all required fields...
 		}
-		if(context.get("hasConvertIntoCall") != null && (Boolean) context.get("hasConvertIntoCall")) {
-			callEvent = convertLeadWizardService.createEvent((Map<String, Object>) context.get("callEvent"));
+		if(context.get("$hasConvertIntoCall") != null && (Boolean) context.get("$hasConvertIntoCall")) {
+			callEvent = convertLeadWizardService.createEvent((Map<String, Object>) context.get("$callEvent"));
 			//TODO check all required fields...
 		}
-		if(context.get("hasConvertIntoMeeting") != null && (Boolean) context.get("hasConvertIntoMeeting")) {
-			meetingEvent = convertLeadWizardService.createEvent((Map<String, Object>) context.get("meetingEvent"));
+		if(context.get("$hasConvertIntoMeeting") != null && (Boolean) context.get("$hasConvertIntoMeeting")) {
+			meetingEvent = convertLeadWizardService.createEvent((Map<String, Object>) context.get("$meetingEvent"));
 			//TODO check all required fields...
 		}
-		if(context.get("hasConvertIntoTask") != null && (Boolean) context.get("hasConvertIntoTask")) {
-			taskEvent = convertLeadWizardService.createEvent((Map<String, Object>)context.get("taskEvent"));
+		if(context.get("$hasConvertIntoTask") != null && (Boolean) context.get("$hasConvertIntoTask")) {
+			taskEvent = convertLeadWizardService.createEvent((Map<String, Object>)context.get("$taskEvent"));
 			//TODO check all required fields...
 		}
 
