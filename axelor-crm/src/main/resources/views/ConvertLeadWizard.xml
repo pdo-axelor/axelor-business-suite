@@ -56,7 +56,7 @@
 					</editor>
 				</field>
 			</panel>
-			<panel name="convertIntoPartner" title="Convert into Partner" showIf="hasConvertIntoPartner" onTabSelect="action-convert-lead-wizard-record-default-partner-address,action-partner-attrs-change-name">
+			<panel name="convertIntoPartner" title="Convert into Partner" showIf="hasConvertIntoPartner" onTabSelect="action-partner-attrs-change-name">
 				<field name="partner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 					<editor x-show-titles="false">
 						<label title="Personal" colSpan="12"/>
@@ -410,6 +410,7 @@
     </action-record>
     
     <action-record name="action-convert-lead-wizard-record-default-partner-address" model="com.axelor.apps.base.db.Partner">
+		<field name="_lead" expr="eval: _lead = __repo__.of(Lead).find(_lead.id)"/>
 		<field name="primaryAddress" expr="eval: _lead.primaryAddress"/>
 		<field name="primaryCity" expr="eval: _lead.primaryCity"/>
 		<field name="primaryState" expr="eval: _lead.primaryState"/>
