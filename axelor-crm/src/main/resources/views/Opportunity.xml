@@ -204,7 +204,7 @@
 	</action-record>
     
     <action-record name="action-opportunity-record-from-lead" model="com.axelor.apps.crm.db.Opportunity">
-    	<field name="lead" expr="eval: _lead"/>
+    	<field name="lead" expr="eval: _lead = __repo__.of(Lead).find(_lead.id)"/>
     	<field name="amount" expr="eval: _lead.opportunityAmount"/>
     	<field name="description" expr="eval: _lead.description"/>
     	<field name="source" expr="eval: _lead.source"/>

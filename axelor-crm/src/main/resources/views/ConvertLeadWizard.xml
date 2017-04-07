@@ -544,7 +544,7 @@
 	
 	<action-record name="action-convert-lead-wizard-default-call-event" model="com.axelor.apps.crm.db.Event">
     	<field name="typeSelect" expr="eval: 1"/>
-    	<field name="lead" expr="eval: _lead"/>
+    	<field name="lead" expr="eval: _lead = __repo__.of(Lead).find(_lead.id)"/>
     	<field name="description" expr="eval: _lead.description"/>
     	<field name="user" expr="eval: _lead.user"/>
     	<field name="team" expr="eval: _lead.team"/>
@@ -578,7 +578,7 @@
     
      <action-record name="action-convert-lead-wizard-default-meeting-event" model="com.axelor.apps.crm.db.Event">
     	<field name="typeSelect" expr="eval: 2"/>
-    	<field name="lead" expr="eval: _lead"/>
+    	<field name="lead" expr="eval: _lead = __repo__.of(Lead).find(_lead.id)"/>
     	<field name="description" expr="eval: _lead.description"/>
     	<field name="user" expr="eval: _lead.user"/>
     	<field name="team" expr="eval: _lead.team"/>
@@ -610,7 +610,7 @@
 
     <action-record name="action-convert-lead-wizard-default-task-event" model="com.axelor.apps.crm.db.Event">
     	<field name="typeSelect" expr="eval: 3"/>
-    	<field name="lead" expr="eval: _lead"/>
+    	<field name="lead" expr="eval: _lead = __repo__.of(Lead).find(_lead.id)"/>
     	<field name="description" expr="eval: _lead.description"/>
     	<field name="user" expr="eval: _lead.user"/>
     	<field name="team" expr="eval: _lead.team"/>
