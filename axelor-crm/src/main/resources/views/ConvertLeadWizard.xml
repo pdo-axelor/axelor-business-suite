@@ -457,6 +457,7 @@
     </action-record>
     
     <action-record name="action-convert-lead-wizard-attrs-default-contact-address" model="com.axelor.apps.base.db.Partner">
+		<field name="_lead" expr="eval: _lead = __repo__.of(Lead).find(_lead.id)"/>
 		<field name="primaryAddress" expr="eval: _lead.primaryAddress"/>
 		<field name="primaryCity" expr="eval: _lead.primaryCity"/>
 		<field name="primaryState" expr="eval: _lead.primaryState"/>
