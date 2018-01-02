@@ -591,4 +591,9 @@ public interface IExceptionMessage {
 	static final String DEPOSIT_SLIP_ALREADY_PUBLISHED = /*$$(*/ "The deposit slip has already been published." /*)*/;
 	static final String DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE = /*$$(*/ "Unsupported payment mode type" /*)*/;;
 
+    /*
+     * Partner
+     */
+    String PARTNER_BANK_DETAILS_MISSING = /*$$(*/ "Bank details are missing for partner %s." /*)*/;
+
 }
