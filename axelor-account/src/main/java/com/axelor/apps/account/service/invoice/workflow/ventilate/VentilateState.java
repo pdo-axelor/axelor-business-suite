@@ -60,7 +60,7 @@ public class VentilateState extends WorkflowInvoice {
 	private AccountConfigService accountConfigService;
 
 	protected AppAccountService appAccountService;
-	
+
 	private InvoiceRepository invoiceRepo;
 
 	protected WorkflowVentilationService workflowService;
@@ -142,7 +142,7 @@ public class VentilateState extends WorkflowInvoice {
 	}
 
 	protected void setDate( ) throws AxelorException{
-		
+
 		if(invoice.getInvoiceDate() == null)  {
 			invoice.setInvoiceDate(appAccountService.getTodayDate());
 		} else if (invoice.getInvoiceDate().isAfter(appAccountService.getTodayDate())) {
@@ -238,9 +238,7 @@ public class VentilateState extends WorkflowInvoice {
 	 */
 	protected void setInvoiceId(Sequence sequence) throws AxelorException {
 
-		if (!Strings.isNullOrEmpty(invoice.getInvoiceId()) && !invoice.getInvoiceId().contains("*")) {
-			return;
-		}
+		if ( !sequenceService.isEmptyOrDraftSequenceNumber(invoice.getInvoiceId())) { return; }
 
 		invoice.setInvoiceId( sequenceService.getSequenceNumber(sequence, invoice.getInvoiceDate()) );
 

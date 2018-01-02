@@ -58,6 +58,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
@@ -325,14 +326,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		
 	}
 	
-	protected String getDraftSequence(Invoice invoice)  {
-		return "*" + invoice.getId();
-	}
-	
-	public void setDraftSequence(Invoice invoice)  {
+    @Override
+	public void setDraftSequence(Invoice invoice) throws AxelorException {
 		
 		if (invoice.getId() != null && Strings.isNullOrEmpty(invoice.getInvoiceId()))  {
-			invoice.setInvoiceId(this.getDraftSequence(invoice));
+			invoice.setInvoiceId(Beans.get(SequenceService.class).getDraftSequenceNumber(invoice));
 		}
 		
 	}
