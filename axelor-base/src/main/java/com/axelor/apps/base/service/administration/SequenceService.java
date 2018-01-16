@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -302,4 +302,29 @@ public class SequenceService {
                 || sequenceNumber.matches(String.format("[\\%s\\*]\\d+", DRAFT_PREFIX));
     }
 
+    /**
+     * Computes sequence full name
+     *
+     * @param sequence Sequence to compute full name
+     */
+    public String computeFullName(Sequence sequence) {
+        StringBuilder fn = new StringBuilder();
+
+        if (sequence.getPrefixe() != null) {
+            fn.append(sequence.getPrefixe());
+        }
+
+        for (int i = 0; i < sequence.getPadding(); i++) {
+            fn.append("X");
+        }
+
+        if (sequence.getSuffixe() != null) {
+            fn.append(sequence.getSuffixe());
+        }
+
+        fn.append(" - ");
+        fn.append(sequence.getName());
+
+        return fn.toString();
+    }
 }

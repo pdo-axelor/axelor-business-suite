@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.stock.db.repo;
 
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.LocationSaveService;
 import com.axelor.inject.Beans;
 
-public class LocationStockRepository extends LocationRepository {
+public class StockLocationStockRepository extends StockLocationRepository {
 
     /**
      * Override to remove incompatible locations in partners
@@ -29,7 +29,7 @@ public class LocationStockRepository extends LocationRepository {
      * @return
      */
     @Override
-    public Location save(Location entity) {
+    public StockLocation save(StockLocation entity) {
         Beans.get(LocationSaveService.class).removeForbiddenDefaultLocation(entity);
         return super.save(entity);
     }
