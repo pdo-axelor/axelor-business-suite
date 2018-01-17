@@ -37,7 +37,8 @@
     <string name="homeAction" massUpdate="true"/>
     <one-to-many name="emailAccountList" ref="com.axelor.apps.message.db.EmailAccount" title="Email accounts"/>
 
-    <finder-method name="findByCode" using="code" filter="LOWER(self.code) = LOWER(:code)"/>
+    <finder-method name="findByCode" using="code" filter="LOWER(self.code) = LOWER(:code)" />
+    <finder-method name="findByName" using="name" filter="LOWER(self.name) = LOWER(:name)" />
   </entity>
 
 </domain-models>
