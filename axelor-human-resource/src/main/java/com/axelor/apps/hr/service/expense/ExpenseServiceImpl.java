@@ -226,7 +226,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		if (hrConfig.getExpenseMailNotification()) {
 
-			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getSentExpenseTemplate(hrConfig));
+			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getSentExpenseTemplate(hrConfig), null);
 
 		}
 
@@ -275,7 +275,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		if (hrConfig.getExpenseMailNotification()) {
 
-			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getValidatedExpenseTemplate(hrConfig));
+			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getValidatedExpenseTemplate(hrConfig), null);
 
 		}
 
@@ -299,7 +299,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		if (hrConfig.getExpenseMailNotification()) {
 
-			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getRefusedExpenseTemplate(hrConfig));
+			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getRefusedExpenseTemplate(hrConfig), null);
 
 		}
 
@@ -428,7 +428,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		if (hrConfig.getTimesheetMailNotification()) {
 
-			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getCanceledExpenseTemplate(hrConfig));
+			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getCanceledExpenseTemplate(hrConfig), null);
 
 		}
 
@@ -515,7 +515,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		if (atiChoice == 1 || atiChoice == 3) {
 			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getUntaxedAmount(),
 					expenseLine.getUntaxedAmount(), expenseLine.getComments(), BigDecimal.ONE, product.getUnit(), null, priority, BigDecimal.ZERO, IPriceListLine.AMOUNT_TYPE_NONE,
-					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(), false) {
+					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(), false, false) {
 
 				@Override
 				public List<InvoiceLine> creates() throws AxelorException {
@@ -531,7 +531,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		} else {
 			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getTotalAmount(),
 					expenseLine.getTotalAmount(), expenseLine.getComments(), BigDecimal.ONE, product.getUnit(), null, priority, BigDecimal.ZERO, IPriceListLine.AMOUNT_TYPE_NONE,
-					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(), false) {
+					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(), false, false) {
 
 				@Override
 				public List<InvoiceLine> creates() throws AxelorException {

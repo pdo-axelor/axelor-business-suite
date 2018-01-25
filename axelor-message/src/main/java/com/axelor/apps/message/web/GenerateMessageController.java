@@ -101,7 +101,8 @@ public class GenerateMessageController {
 		Long objectId =  Long.parseLong( context.get("_objectId").toString() );
 		String model = (String) context.get("_templateContextModel");
 		String tag = (String) context.get("_tag");
-
+		response.setCanClose(true);
+		
 		try { response.setView( generateMessage( objectId, model, tag, template ) ); } 
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
@@ -114,7 +115,7 @@ public class GenerateMessageController {
 		LOG.debug("model : {} ", model);
 		LOG.debug("tag : {} ", tag);
 		
-		Message message = templateMessageService.generateMessage(objectId, model, tag, template);
+		Message message = templateMessageService.generateMessage(objectId, model, tag, template, null);
 
 		return ActionView.define( I18n.get(IExceptionMessage.MESSAGE_3) )
 				.model( Message.class.getName() )
