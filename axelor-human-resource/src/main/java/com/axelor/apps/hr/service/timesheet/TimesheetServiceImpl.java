@@ -81,6 +81,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author axelor
+ *
+ */
 public class TimesheetServiceImpl implements TimesheetService{
 
 	@Inject
@@ -94,7 +98,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 	
 	@Inject
 	protected ProjectService projectService;
-
 	@Inject
 	protected EmployeeRepository employeeRepo;
 	
@@ -155,7 +158,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
 		if (hrConfig.getTimesheetMailNotification()) {
-			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getSentTimesheetTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getSentTimesheetTemplate(hrConfig));
 		}
 		
 		return null;
@@ -175,8 +178,10 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
-		if (hrConfig.getTimesheetMailNotification()) {
-			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getValidatedTimesheetTemplate(hrConfig), null);
+		if(hrConfig.getTimesheetMailNotification())  {
+				
+			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getValidatedTimesheetTemplate(hrConfig));
+				
 		}
 		
 		return null;
@@ -195,8 +200,10 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
-		if (hrConfig.getTimesheetMailNotification()) {
-			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getRefusedTimesheetTemplate(hrConfig), null);
+		if(hrConfig.getTimesheetMailNotification())  {
+				
+			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getRefusedTimesheetTemplate(hrConfig));
+				
 		}
 		
 		return null;
@@ -212,8 +219,9 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 
-		if (hrConfig.getTimesheetMailNotification()) {
-			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getCanceledTimesheetTemplate(hrConfig), null);
+		if(hrConfig.getTimesheetMailNotification())  {
+
+			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getCanceledTimesheetTemplate(hrConfig));
 		}
 
 		return null;
@@ -238,7 +246,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		if (employee == null) {
 			throw new AxelorException(timesheet, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),user.getName());
 		}
-		WeeklyPlanning planning = user.getEmployee().getPlanning();
+		WeeklyPlanning planning = user.getEmployee().getWeeklyPlanning();
 		if (planning == null) {
 			throw new AxelorException(timesheet, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),user.getName());
 		}
@@ -685,8 +693,10 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
 
-		for (TimesheetLine timesheetLine : timesheetLines) {
-			periodTotal = periodTotal.add(timesheetLine.getDurationStored());
+		if (timesheetLines != null) {
+			for (TimesheetLine timesheetLine : timesheetLines) {
+				periodTotal = periodTotal.add(timesheetLine.getDurationStored());
+			}
 		}
 
 		return periodTotal;
@@ -711,7 +721,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				.context("_activeCompany", user.getActiveCompany());
 
 		if(employee == null || !employee.getHrManager())  {
-			if (employee == null || employee.getManager() == null) {
+			if (employee == null || employee.getManagerUser() == null) {
 				actionView.domain(actionView.get().getDomain() + " AND (self.timesheet.user = :_user OR self.timesheet.user.employee.manager = :_user)")
 						.context("_user", user);
 			}

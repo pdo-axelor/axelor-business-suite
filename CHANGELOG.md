@@ -9,6 +9,14 @@
 - Add a version management on Production process
 - Added 'sale blocking' in Partner
 - Added 'purchase blocking' in Partner
+- Automatic mail on stock move realization
+- ISPM15 standard for stock move
+- Customs regulations for stock moves
+- Payment schedules
+- Cheque deposit slips
+- Direct debit batches
+- Logistical forms
+- New subscription feature.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
@@ -16,6 +24,8 @@
 - New report for InvoicingProject
 - Added fullname in Sequence
 - Generate sale order from Opportunity in edit mode directly
+- Improved architecture of Message generation from a template, send email, and manage specific email account in a module without change the original behavior in the others
+- A freight carrier is now a carrier partner
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
@@ -24,9 +34,17 @@
 
 ## [Unreleased 4.x]
 ### Improvements
+- Close pay period automatically when all payroll preparation are exported
+- KilometricExpenseLineList are no more duplicated in ExpenseLineList. ExpenseLineList is renamed into GeneralExpenseLineList.
+- The distinction between round-trip and one way ticket in kilometric expenses is now only informative.
 
 ### Bug Fixes
 - Fix demo data en and fr on General config to set the correct value of the fields custStockMoveMgtOnSO and supplStockMoveMgtOnSO.
+- Fixes in invoicing timetable in sale order
+- Fix payment voucher report.
+- Check ICS number on direct debit sepa file generation
+- Fix receiver bank details filter in BankOrder
+- Years can have the same code as long as the company/type differ.
 
 
 ## [4.1.1] - 2018-01-10

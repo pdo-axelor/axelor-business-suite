@@ -221,23 +221,25 @@ public class StockMoveController {
 
 	public void  splitInto2(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		Long newStockMoveId = stockMoveService.splitInto2(stockMove.getId(), stockMove.getStockMoveLineList());
+		List<StockMoveLine> modifiedStockMoveLineList = stockMove.getStockMoveLineList();
+		stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+		try {
+			StockMove newStockMove = stockMoveService.splitInto2(stockMove, modifiedStockMoveLineList);
 
-		if (newStockMoveId == null){
-			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_SPLIT_NOT_GENERATED));
-		}else{
-			response.setCanClose(true);
+			if (newStockMove == null){
+				response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_SPLIT_NOT_GENERATED));
+			}else{
+				response.setCanClose(true);
 
-			response.setView(ActionView
-					.define("Stock move")
-					.model(StockMove.class.getName())
-					.add("grid", "stock-move-grid")
-					.add("form", "stock-move-form")
-					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(newStockMoveId)).map());
-
-		}
-
+				response.setView(ActionView
+						.define("Stock move")
+						.model(StockMove.class.getName())
+						.add("grid", "stock-move-grid")
+						.add("form", "stock-move-form")
+						.param("forceEdit", "true")
+						.context("_showRecord", String.valueOf(newStockMove.getId())).map());
+			}
+		} catch(Exception e) { TraceBackService.trace(response, e); }
 	}
 
 	public void changeConformityStockMove(ActionRequest request, ActionResponse response) {
@@ -302,6 +304,12 @@ public class StockMoveController {
 	    response.setValues(stockMove);
 	}
 
+	/**
+	 * Called on load from stock move form view and on trading name change.
+	 * Set the default value and the domain for {@link StockMove#printingSettings}
+	 * @param request
+	 * @param response
+	 */
 	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 		PrintingSettings printingSettings = stockMove.getPrintingSettings();
@@ -310,7 +318,7 @@ public class StockMoveController {
 		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
 			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
 		}
-		String domain = !printingSettingsList.isEmpty() ? String.format("self.id IN (%s)", StringTool.getIdListString(printingSettingsList)) : null;
+		String domain = String.format("self.id IN (%s)", !printingSettingsList.isEmpty() ? StringTool.getIdListString(printingSettingsList) : "0");
 
 		response.setValue("printingSettings", printingSettings);
 		response.setAttr("printingSettings", "domain", domain);
