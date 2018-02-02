@@ -71,10 +71,10 @@ public interface IExceptionMessage {
 	
 	static final public String PERIOD_1 = /*$$(*/ "No period found or it has been closed for the company %s" /*)*/ ;
 	static final public String PERIOD_2 = /*$$(*/ "Period closed" /*)*/ ;
-
+	static final String PAY_PERIOD_CLOSED = /*$$(*/ "Warning : the pay period %s is closed." /*)*/;
 	/**
 	 * Abstract batch
-	 */	
+	 */
 	String ABSTRACT_BATCH_1 =  /*$$(*/ "This batch is not runnable!" /*)*/;
 	String ABSTRACT_BATCH_REPORT = /*$$(*/ "Batch report:" /*)*/;
 	String ABSTRACT_BATCH_DONE_SINGULAR = /*$$(*/ "%d record processed successfully," /*)*/;
@@ -115,14 +115,14 @@ public interface IExceptionMessage {
 	 * Product service
 	 */
 	static final public String PRODUCT_NO_SEQUENCE = /*$$(*/ "There is no configured sequence for product" /*)*/;
-	
+
 	/**
 	 * Importer
 	 */
 	static final public String IMPORTER_1 = /*$$(*/ "Error : Mapping file is unreachable." /*)*/;
 	static final public String IMPORTER_2 = /*$$(*/ "Error : Data file is unreachable." /*)*/;
 	static final public String IMPORTER_3 = /*$$(*/ "Error : Mapping file is not found." /*)*/;
-	
+
 	/**
 	 * Importer Listener 
 	 */
@@ -145,7 +145,7 @@ public interface IExceptionMessage {
 	static final public String QUERIE_1 = /*$$(*/ "Error : There is no query set for the querie %s" /*)*/;
 	static final public String QUERIE_2 = /*$$(*/ "Error : Incorrect query for the querie %s" /*)*/;
 	static final public String QUERIE_3 = /*$$(*/ "Valid query." /*)*/;
-	
+
 	/**
 	 * Tax service
 	 */
@@ -208,11 +208,17 @@ public interface IExceptionMessage {
 	 */
 	static final public String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
 	static final public String PRODUCT_2 = /*$$(*/ "Prices updated" /*)*/;
-	
+
 	/**
 	 * Calendar
 	 */
 	static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
 	static final String IMPORT_CALENDAR = /*$$(*/ "Import calendar" /*)*/;
 
+
+	/**
+	 * Price list
+	 */
+	String PRICE_LIST_DATE_WRONG_ORDER = /*$$(*/ "The end date is before the begin date." /*)*/;
+	String PARTNER_PRICE_LIST_DATE_INCONSISTENT = /*$$(*/ "The price list %s will still be active when the price list %s will become active." /*)*/;
 }

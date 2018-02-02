@@ -238,4 +238,11 @@ public interface InvoiceService {
 	 */
 	BankDetails getBankDetails(Invoice invoice) throws AxelorException;
 
+	/**
+	 * @param invoice
+	 * @return {@link com.axelor.apps.base.db.repo.PriceListRepository#TYPE_SALE}
+	 *        OR {@link com.axelor.apps.base.db.repo.PriceListRepository#TYPE_PURCHASE}
+	 */
+	int getPurchaseTypeOrSaleType(Invoice invoice);
+
 }

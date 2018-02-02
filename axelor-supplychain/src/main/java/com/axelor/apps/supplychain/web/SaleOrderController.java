@@ -24,11 +24,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -36,8 +39,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.apps.supplychain.db.Subscription;
-import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
@@ -46,7 +47,6 @@ import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -57,6 +57,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class SaleOrderController{
@@ -72,7 +73,7 @@ public class SaleOrderController{
 
 	@Inject
 	private SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
-
+	
 	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -97,13 +98,13 @@ public class SaleOrderController{
 		}
 	}
 
-	public void getLocation(ActionRequest request, ActionResponse response) {
+	public void getStockLocation(ActionRequest request, ActionResponse response) {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
 		if(saleOrder != null) {
 
-			StockLocation stockLocation = Beans.get(StockLocationService.class).getLocation(saleOrder.getCompany());
+			StockLocation stockLocation = Beans.get(StockLocationService.class).getDefaultStockLocation(saleOrder.getCompany());
 
 			if(stockLocation != null) {
 				response.setValue("stockLocation", stockLocation);
@@ -226,12 +227,14 @@ public class SaleOrderController{
 			if(invoice != null)  {
 				response.setCanClose(true);
 				response.setView(ActionView
-		            .define(I18n.get("Invoice generated"))
-		            .model(Invoice.class.getName())
-		            .add("form", "invoice-form")
-		            .add("grid", "invoice-grid")
-		            .context("_showRecord",String.valueOf(invoice.getId()))
-		            .map());
+						.define(I18n.get("Invoice generated"))
+						.model(Invoice.class.getName())
+						.add("form", "invoice-form")
+						.add("grid", "invoice-grid")
+						.context("_showRecord",String.valueOf(invoice.getId()))
+						.context("_operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+						.context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
+						.map());
 			}
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -279,86 +282,6 @@ public class SaleOrderController{
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 
-	public void getSubscriptionSaleOrdersToInvoice(ActionRequest request, ActionResponse response) throws AxelorException  {
-
-		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoiced = false AND self.invoicingDate <= ?1", appSupplychainService.getTodayDate()).fetch();
-		List<Long> listId = new ArrayList<>();
-		for (Subscription subscription : subscriptionList) {
-			listId.add(subscription.getSaleOrderLine().getSaleOrder().getId());
-		}
-		if (listId.isEmpty()) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No Subscription to Invoice"));
-		}
-		if(listId.size() == 1){
-			response.setView(ActionView
-		            .define(I18n.get("Subscription Sale orders"))
-		            .model(SaleOrder.class.getName())
-		            .add("grid", "sale-order-subscription-grid")
-		            .add("form", "sale-order-form")
-		            .domain("self.id = "+listId.get(0))
-		            .map());
-		}
-		response.setView(ActionView
-	            .define(I18n.get("Subscription Sale orders"))
-	            .model(SaleOrder.class.getName())
-	            .add("grid", "sale-order-subscription-grid")
-	            .add("form", "sale-order-form")
-	            .domain("self.id in ("+Joiner.on(",").join(listId)+")")
-	            .map());
-	}
-
-	@SuppressWarnings("unchecked")
-	public void invoiceSubscriptions(ActionRequest request, ActionResponse response) throws AxelorException{
-		List<Integer> listSelectedSaleOrder = (List<Integer>) request.getContext().get("_ids");
-		if(listSelectedSaleOrder != null){
-			SaleOrder saleOrder = null;
-			List<Long> listInvoiceId = new ArrayList<>();
-			for (Integer integer : listSelectedSaleOrder) {
-				saleOrder = saleOrderRepo.find(integer.longValue());
-				Invoice invoice = saleOrderInvoiceServiceImpl.generateSubcriptionInvoiceForSaleOrder(saleOrder);
-				if(invoice != null){
-					listInvoiceId.add(invoice.getId());
-				}
-			}
-			if (listInvoiceId.isEmpty()) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No sale order selected or no subscription to invoice"));
-			}
-			response.setReload(true);
-			if(listInvoiceId.size() == 1){
-				response.setView(ActionView
-			            .define(I18n.get("Invoice Generated"))
-			            .model(Invoice.class.getName())
-			            .add("grid", "invoice-grid")
-			            .add("form", "invoice-form")
-			            .domain("self.id = "+listInvoiceId.get(0))
-			            .map());
-			}
-			response.setView(ActionView
-		            .define(I18n.get("Invoices Generated"))
-		            .model(Invoice.class.getName())
-		            .add("grid", "invoice-grid")
-		            .add("form", "invoice-form")
-		            .domain("self.id in ("+Joiner.on(",").join(listInvoiceId)+")")
-		            .map());
-		}
-	}
-
-	public void invoiceSubscriptionsSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException{
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		saleOrder = saleOrderRepo.find(saleOrder.getId());
-		Invoice invoice = saleOrderInvoiceServiceImpl.generateSubcriptionInvoiceForSaleOrder(saleOrder);
-		if (invoice == null) {
-			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get("No Subscription to Invoice"));
-		}
-		response.setReload(true);
-		response.setView(ActionView
-	            .define(I18n.get("Invoice Generated"))
-	            .model(Invoice.class.getName())
-	            .add("form", "invoice-form")
-	            .add("grid", "invoice-grid")
-	            .context("_showRecord",String.valueOf(invoice.getId()))
-	            .map());
-	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void mergeSaleOrder(ActionRequest request, ActionResponse response)  {
@@ -373,7 +296,7 @@ public class SaleOrderController{
 		}
 		
 		if (request.getContext().get(lineToMerge) != null){
-			
+
 			if (request.getContext().get(lineToMerge) instanceof List){
 				//No confirmation popup, sale orders are content in a parameter list
 				List<Map> saleOrderMap = (List<Map>)request.getContext().get(lineToMerge);
@@ -403,7 +326,7 @@ public class SaleOrderController{
 		//Useful to determine if a difference exists between price lists of all sale orders
 		boolean existPriceListDiff = false;
 		StockLocation commonLocation = null;
-		//Useful to determine if a difference exists between locations of all sale orders
+		//Useful to determine if a difference exists between stock locations of all sale orders
 		boolean existLocationDiff = false;
 		
 		SaleOrder saleOrderTemp;
@@ -477,7 +400,7 @@ public class SaleOrderController{
 			response.setFlash(fieldErrors.toString());
 			return;
 		}
-		
+
 		//Check if priceList or contactPartner are content in parameters
 		if (request.getContext().get("priceList") != null){
 			commonPriceList = JPA.em().find(PriceList.class, new Long((Integer)((Map)request.getContext().get("priceList")).get("id")));
@@ -503,7 +426,7 @@ public class SaleOrderController{
 										.param("show-confirm", "false")
 										.param("popup-save", "false")
 										.param("forceEdit", "true");
-			
+
 			if (existPriceListDiff){
 				confirmView.context("contextPriceListToCheck", "true");
 			}
@@ -524,7 +447,7 @@ public class SaleOrderController{
 
 			return;
 		}
-		
+
 		try{
 			SaleOrder saleOrder = saleOrderServiceSupplychain.mergeSaleOrders(saleOrderList, commonCurrency, commonClientPartner, commonCompany, commonLocation, commonContactPartner, commonPriceList, commonTeam);
 			if (saleOrder != null){
@@ -562,4 +485,23 @@ public class SaleOrderController{
         }
     }
 
+	/**
+	 * Called from sale order generate purchase order form.
+	 * Set domain for supplier partner.
+	 * @param request
+	 * @param response
+	 */
+	public void supplierPartnerSelectDomain(ActionRequest request, ActionResponse response) {
+        SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+        String domain = "self.isContact = false AND self.isSupplier = true";
+
+		String blockedPartnerQuery = Beans.get(BlockingService.class)
+				.listOfBlockedPartner(saleOrder.getCompany(), BlockingRepository.PURCHASE_BLOCKING);
+
+		if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
+			domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+		}
+		response.setAttr("supplierPartnerSelect", "domain", domain);
+	}
+	
 }

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -52,9 +52,6 @@ import com.google.common.base.Strings;
 public class BankOrderFileService {
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-    public static final String SEPA_TYPE_CORE = "CORE";
-    public static final String SEPA_TYPE_SBB = "SBB";
 
 	protected static final String FILE_EXTENSION_XML = "xml";
 	protected static final String FILE_EXTENSION_TXT = "txt";

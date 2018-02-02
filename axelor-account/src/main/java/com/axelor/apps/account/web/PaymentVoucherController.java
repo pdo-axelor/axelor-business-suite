@@ -124,7 +124,7 @@ public class PaymentVoucherController {
 			try {
 				Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
 				if (journal.getExcessPaymentOk()) {
-					response.setAlert(I18n.get("No items has been selected, do you want to continue ?"));
+					response.setAlert(I18n.get("No items have been selected. Do you want to continue?"));
 				}
 			} catch (AxelorException e) {
 				TraceBackService.trace(response, e);
@@ -150,8 +150,11 @@ public class PaymentVoucherController {
 		
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 		
-		String name = I18n.get("Payment voucher")+" "+paymentVoucher.getReceiptNo();
-		
+		String name = I18n.get("Payment voucher");
+		if (!Strings.isNullOrEmpty(paymentVoucher.getReceiptNo())) {
+			name += " " + paymentVoucher.getReceiptNo();
+		}
+
 		String fileLink = ReportFactory.createReport(IReport.PAYMENT_VOUCHER, name+"-${date}")
 				.addParam("PaymentVoucherId", paymentVoucher.getId())
 				.generate()

@@ -154,7 +154,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 			StockLocation startLocation = Beans.get(StockLocationRepository.class).findByPartner(purchaseOrder.getSupplierPartner());
 
 			if (startLocation == null) {
-				startLocation = stockConfigService.getSupplierVirtualLocation(stockConfig);
+				startLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
 			}
 			if (startLocation == null) {
 				throw new AxelorException(purchaseOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PURCHASE_ORDER_1), company.getName());
@@ -175,8 +175,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				// Check if the company field 'hasInSmForStorableProduct' = true and productTypeSelect = 'storable' or 'hasInSmForNonStorableProduct' = true and productTypeSelect = 'service' or productTypeSelect = 'other'
 				if(product != null
 						&& ((supplyChainConfig.getHasInSmForStorableProduct() && ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect()))
-								|| (supplyChainConfig.getHasInSmForNonStorableProduct() && !ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())))
-						&& !ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())) {
+								|| (supplyChainConfig.getHasInSmForNonStorableProduct() && !ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())))) {
 					
 					Unit unit = purchaseOrderLine.getProduct().getUnit();
 					BigDecimal qty = purchaseOrderLine.getQty();

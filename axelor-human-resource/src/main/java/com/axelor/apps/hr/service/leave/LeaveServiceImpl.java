@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,20 +17,7 @@
  */
 package com.axelor.apps.hr.service.leave;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.mail.MessagingException;
-
 import com.axelor.apps.base.db.Company;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.WeeklyPlanning;
@@ -40,11 +27,11 @@ import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EventsPlanning;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
-import com.axelor.apps.hr.db.PublicHolidayPlanning;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
@@ -63,6 +50,17 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class LeaveServiceImpl  implements  LeaveService  {
 	
@@ -160,7 +158,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),leave.getUser().getName());
 			}
 
-			WeeklyPlanning weeklyPlanning = employee.getPlanning();
+			WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
 			if(weeklyPlanning == null){
 				HRConfig conf = leave.getCompany().getHrConfig();
 				if(conf != null){
@@ -170,11 +168,11 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			if (weeklyPlanning == null) {
 				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PLANNING), employee.getName());
 			}
-			PublicHolidayPlanning publicHolidayPlanning = employee.getPublicHolidayPlanning();
+			EventsPlanning publicHolidayPlanning = employee.getPublicHolidayEventsPlanning();
 			if(publicHolidayPlanning == null){
 				HRConfig conf = leave.getCompany().getHrConfig();
 				if(conf != null){
-					publicHolidayPlanning = conf.getPublicHolidayPlanning();
+					publicHolidayPlanning = conf.getPublicHolidayEventsPlanning();
 				}
 			}
 
@@ -348,7 +346,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			throw new AxelorException(leave, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), leave.getUser().getName());
 		}
 
-		WeeklyPlanning weeklyPlanning = employee.getPlanning();
+		WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
 
 		if (weeklyPlanning == null) {
 			throw new AxelorException(leave, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PLANNING), employee.getName());
@@ -426,7 +424,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	
 	public BigDecimal computeLeaveDaysByLeaveRequest(LocalDate fromDate, LocalDate toDate, LeaveRequest leaveRequest, Employee employee) throws AxelorException{
 		BigDecimal leaveDays = BigDecimal.ZERO;
-		WeeklyPlanning weeklyPlanning = employee.getPlanning();
+		WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
 		if(leaveRequest.getFromDate().equals(fromDate)){
 			leaveDays = leaveDays.add(new BigDecimal(this.computeStartDateWithSelect(fromDate, leaveRequest.getStartOnSelect(), weeklyPlanning)));
 		}
@@ -451,11 +449,11 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	}
 	
 	public void getLeaveReason(ActionRequest request, ActionResponse response){
-		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
+		List<Map<String,String>> dataList = new ArrayList<>();
 		try{
 			List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
 			for (LeaveReason leaveReason : leaveReasonList) {
-				Map<String, String> map = new HashMap<String,String>();
+				Map<String, String> map = new HashMap<>();
 				map.put("name", leaveReason.getLeaveReason());
 				map.put("id", leaveReason.getId().toString());
 				dataList.add(map);
@@ -639,9 +637,9 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		LocalDate beginDate = leaveRequest.getFromDate() ;
 
 		int interval = ( beginDate.getYear() - todayDate.getYear() ) *12 + beginDate.getMonthValue() - todayDate.getMonthValue();
-		BigDecimal num = leaveRequest.getLeaveLine().getQuantity().add( leaveRequest.getUser().getEmployee().getPlanning().getLeaveCoef().multiply( leaveRequest.getLeaveLine().getLeaveReason().getDefaultDayNumberGain()).multiply(new BigDecimal( interval )) );
+		BigDecimal num = leaveRequest.getLeaveLine().getQuantity().add( leaveRequest.getUser().getEmployee().getWeeklyPlanning().getLeaveCoef().multiply( leaveRequest.getLeaveLine().getLeaveReason().getDefaultDayNumberGain()).multiply(new BigDecimal( interval )) );
 
-		if (leaveRequest.getDuration().compareTo( num ) == 1){
+		if (leaveRequest.getDuration().compareTo( num ) > 0){
 			return false;
 		}else{
 			return true;

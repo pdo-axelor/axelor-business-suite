@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,7 +30,7 @@ public class HRMenuValidateService {
 				.context("_statusSelect", ExpenseRepository.STATUS_CONFIRMED);
 
 		if(employee == null || !employee.getHrManager())  {
-			if (employee == null || employee.getManager() == null) {
+			if (employee == null || employee.getManagerUser() == null) {
 				actionView.domain(actionView.get().getDomain() + " AND (self.user = :_user OR self.user.employee.manager = :_user)")
 						.context("_user", user);
 			}
