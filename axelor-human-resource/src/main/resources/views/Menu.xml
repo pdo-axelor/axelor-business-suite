@@ -31,7 +31,7 @@
     	<view type="grid" name="payroll-preparation-grid"/>
 	    <view type="form" name="payroll-preparation-form"/>
 	</action-view>
-	
+
 	<menuitem name="all-lunch-voucher-mgt" parent="hr-root-emp-mgt" title="Lunch Voucher Management" action="lunch.voucher.mgt.all"
 			  if="__config__.app.getApp('employee').getLunchVoucher()"/>
 
@@ -110,6 +110,16 @@
 		<domain>self.year.typeSelect = 2</domain>
 	</action-view>
 
+    <menuitem name="hr-conf-fiscal-period" parent="hr-root-emp-mgt-conf"
+              title="Fiscal periods" action="hr.conf.fiscal.period"/>
+
+    <action-view name="hr.conf.fiscal.period" title="Fiscal periods"
+                 model="com.axelor.apps.base.db.Period" >
+        <view type="grid" name="period-grid"/>
+        <view type="form" name="period-hr-fiscal-form"/>
+        <domain>self.year.typeSelect = 1</domain>
+    </action-view>
+
 	<menuitem name="plannings-all" parent="hr-root-emp-mgt-conf" title="Plannings" />
 
 	<menuitem name="event-planning-all" parent="plannings-all" title="Event planning" action="hr.public.holiday.planning.all"/>
@@ -159,10 +169,10 @@
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="historicLeave"/>
 	</action-method>
 	
-	<menuitem name="leave-request-root-leave-calender" parent="leave-request-root"
-		title="Leaves calendar" action="leave.request.root.leave.calender" />
+	<menuitem name="leave-request-root-leave-calendar" parent="leave-request-root"
+		title="Leaves calendar" action="leave.request.root.leave.calendar" />
 
-	<action-view name="leave.request.root.leave.calender" title="Leaves calendar"
+	<action-view name="leave.request.root.leave.calendar" title="Leaves calendar"
 		model="com.axelor.apps.base.db.ICalendarEvent" >
 		<view type="calendar" name="calendar-all"/>
 		<view type="grid" name="calendar-event-grid"/>

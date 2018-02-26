@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.x]
 ## Features
+- New Inventory view
+- New StockMove view
 - New currency conversion API (ECB)
 - Split accounting report VAT statement in two, VAT on amount received and VAT on invoicing
 - Create sale order from partner and contact
@@ -17,6 +19,10 @@
 - Direct debit batches
 - Logistical forms
 - New subscription feature.
+- Add support to dynamically set the number of decimal digit of BOM quantities
+- If there is no template defined for the object, generate an empty draft message for MESSAGE : wizard
+- Put buttons in hidden mode instead of readOnly in invoicing-project-form and put status to invoiced on generating invoice
+- Manage waste rate in bill of material and take it into account on cost sheet
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
@@ -26,17 +32,46 @@
 - Generate sale order from Opportunity in edit mode directly
 - Improved architecture of Message generation from a template, send email, and manage specific email account in a module without change the original behavior in the others
 - A freight carrier is now a carrier partner
+- EndPeriod on currency conversion api
+- Allow to generate bank order file without using bic code in SEPA context.
+- Remove the field supplierPartner from Event Object
+- Upgrade functionality of advanced export feature
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
 - Fix the default amount on new invoice payment to use the amount remaining of the invoice.
 - Fix demo data en and fr on AppSuplychain to set the correct value on the field supplStockMoveMgtOnSO
+- Fix different split methods in StockMove
+- Fix event hide when we create new from calendar and set domain for my calendar and team calendar
+- Fix default logo position
+- Fix create event from contact m2m of partner
+- Fix copy of manufacturing order
 
 ## [Unreleased 4.x]
+
+### Improvements
+- New assistant in expense form to select payment mode
+- Leave management reset batch now creates a new line with negative quantity
+  instead of clearing old lines
+
+### Bug Fixes
+- Permission change in most HR form
+- Find kilometric allowance rate per company
+- Remove filter on company for historic timesheet
+- More fixes in expense form
+- Show time unit for the right user in timesheet lines
+- Hide button in leave request instead of making it readonly
+- Fix count tags in hr menus
+- Remove the wrong process to create an useless move for excess payment on refund invoice ventilation
+
+
+## [4.1.2] - 2018-02-05
 ### Improvements
 - Close pay period automatically when all payroll preparation are exported
 - KilometricExpenseLineList are no more duplicated in ExpenseLineList. ExpenseLineList is renamed into GeneralExpenseLineList.
 - The distinction between round-trip and one way ticket in kilometric expenses is now only informative.
+- Reconcile invoice with related refund
+- New boolean field "available to users" in expense type
 
 ### Bug Fixes
 - Fix demo data en and fr on General config to set the correct value of the fields custStockMoveMgtOnSO and supplStockMoveMgtOnSO.
@@ -45,6 +80,7 @@
 - Check ICS number on direct debit sepa file generation
 - Fix receiver bank details filter in BankOrder
 - Years can have the same code as long as the company/type differ.
+- Fixes in expense form
 
 
 ## [4.1.1] - 2018-01-10
@@ -321,9 +357,9 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
-
 [Unreleased 5.x]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
-[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...dev
+[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...dev
+[4.1.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/axelor/axelor-business-suite/compare/v4.0.2...v4.1.0
 [4.0.2]: https://github.com/axelor/axelor-business-suite/compare/v4.0.1...v4.0.2
