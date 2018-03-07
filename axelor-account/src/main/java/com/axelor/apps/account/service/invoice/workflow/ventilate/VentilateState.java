@@ -47,7 +47,9 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import com.google.inject.servlet.RequestScoped;
 
+@RequestScoped
 public class VentilateState extends WorkflowInvoice {
 	
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
