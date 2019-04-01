@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.timer.AbstractTimerService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
+import com.axelor.apps.tool.IterTool;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -107,10 +108,8 @@ public class TimerTicketServiceImpl extends AbstractTimerService implements Time
 
   @Override
   public Duration compute(Ticket task) {
-    Duration total = Duration.ZERO;
-    for (Timer timer : task.getTimerList()) {
-      total = total.plus(compute(timer));
-    }
-    return total;
+    return IterTool.getStream(task.getTimerList())
+        .map(this::compute)
+        .reduce(Duration.ZERO, Duration::plus);
   }
 }
