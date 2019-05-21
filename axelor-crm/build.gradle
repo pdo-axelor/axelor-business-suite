@@ -13,4 +13,7 @@ axelor {
 
 dependencies {
 	compile project(":modules:axelor-base")
+
+	implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
+	implementation "org.apache.commons:commons-math3:3.6.1"
 }

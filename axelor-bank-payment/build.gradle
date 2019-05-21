@@ -17,14 +17,20 @@ configurations {
 
 dependencies {
 	compile project(":modules:axelor-account")
-    jaxb 'com.sun.xml.bind:jaxb-xjc:2.2.2',
-         'com.sun.xml.bind:jaxb-impl:2.2.2',
-    	 'javax.xml.bind:jaxb-api:2.2.2'
+	jaxb 'com.sun.xml.bind:jaxb-xjc:2.2.2',
+			'com.sun.xml.bind:jaxb-impl:2.2.2',
+			'javax.xml.bind:jaxb-api:2.2.2'
 
-	compile files("src/main/lib/ebics-1.0.2.jar")
-	compile "org.bouncycastle:bcprov-jdk15:1.46"
-	compile "org.apache.santuario:xmlsec:1.4.3"
-	compile "commons-codec:commons-codec:1.11"
+	implementation files("src/main/lib/ebics-1.0.2.jar")
+	implementation "org.bouncycastle:bcprov-jdk15:1.46"
+	implementation "org.apache.santuario:xmlsec:1.4.3"
+	implementation "commons-codec:commons-codec:1.11"
+	implementation 'commons-io:commons-io:2.6'
+	implementation 'org.apache.httpcomponents:httpclient:4.5.8'
+	implementation 'commons-httpclient:commons-httpclient:3.1'
+	implementation 'jdom:jdom:1.1'
+	implementation 'org.iban4j:iban4j:3.2.1'
+	implementation 'xalan:xalan:2.7.2'
 }
 
 license {

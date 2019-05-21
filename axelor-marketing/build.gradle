@@ -14,5 +14,6 @@ axelor {
 dependencies {
 	compile project(":modules:axelor-crm")
 	compile project(":modules:axelor-studio")
-	compile "com.mandrillapp.wrapper.lutung:lutung:0.0.7"
+
+	implementation "com.mandrillapp.wrapper.lutung:lutung:0.0.7"
 }
