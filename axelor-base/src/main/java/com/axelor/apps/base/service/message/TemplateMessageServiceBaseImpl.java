@@ -157,9 +157,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
         reportSettings.addParam(
             birtTemplateParameter.getName(),
             convertValue(birtTemplateParameter.getType(), maker.make()));
-
-        reportSettings.generate();
-      } catch (AxelorException | BirtException e) {
+      } catch (BirtException e) {
         throw new AxelorException(
             e.getCause(),
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -167,6 +165,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
       }
     }
 
+    reportSettings.generate();
     return reportSettings;
   }
 
